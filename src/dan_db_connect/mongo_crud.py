@@ -56,14 +56,12 @@ class MongoDBOperation:
             if self.collection_name is None:
                 raise ValueError("Collection name must be provided")
             collection_name = self.collection_name
-        
         if datafile.endswith(".csv"):
             data = pd.read_csv(datafile, encoding="utf-8")
         elif datafile.endswith(".xlsx"):
             data = pd.read_excel(datafile, encoding="utf-8")
         else:
             raise ValueError("Unsupported file format. Use CSV or Excel files.")
-        
         data_json = json.loads(data.to_json(orient="records"))
         collection = self.create_collection(collection_name)
         collection.insert_many(data_json)
