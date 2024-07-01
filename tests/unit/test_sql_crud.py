@@ -2,19 +2,22 @@
 
 import sys
 import os
+import pytest
+from mysql.connector.errors import InterfaceError
+from dan_db_connect.sql_crud import MySQLDBOperation
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
 
-import pytest
-from dan_db_connect.sql_crud import MySQLDBOperation
-from mysql.connector.errors import InterfaceError
 
 @pytest.fixture
 def mysql_client():
     return MySQLDBOperation(host="localhost", user="root", password="contidan", database="contidan")
 
+
 def test_create_connection(mysql_client):
     connection = mysql_client.create_connection()
     assert connection is not None
+
 
 def test_insert_record(mysql_client):
     try:
@@ -27,6 +30,7 @@ def test_insert_record(mysql_client):
     except InterfaceError:
         pytest.skip("MySQL server is not available")
 
+
 def test_bulk_insert(mysql_client, tmpdir):
     datafile = tmpdir.join("test_data.csv")
     datafile.write("name,age,sex,class\ndaniel,30,male,level 300\nJanet,25,female,level 400")
@@ -38,6 +42,7 @@ def test_bulk_insert(mysql_client, tmpdir):
     except InterfaceError:
         pytest.skip("MySQL server is not available")
 
+
 def test_find(mysql_client):
     try:
         result = mysql_client.find("SELECT * FROM students WHERE name = 'daniel'")
@@ -46,6 +51,7 @@ def test_find(mysql_client):
     except InterfaceError:
         pytest.skip("MySQL server is not available")
 
+
 def test_delete(mysql_client):
     try:
         mysql_client.delete("students", "name = 'John'")
@@ -53,6 +59,7 @@ def test_delete(mysql_client):
         assert result == []
     except InterfaceError:
         pytest.skip("MySQL server is not available")
+
 
 def test_update(mysql_client):
     record = {"name": "Jane", "age": 25, "sex": "female", "class": "level 400"}
@@ -64,5 +71,3 @@ def test_update(mysql_client):
         assert result[0]["age"] == 26
     except InterfaceError:
         pytest.skip("MySQL server is not available")
-
-
