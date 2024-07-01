@@ -21,7 +21,8 @@ def test_create_connection(mysql_client):
 
 def test_insert_record(mysql_client):
     try:
-        mysql_client.execute_query("CREATE TABLE IF NOT EXISTS students (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), age INT, sex VARCHAR(10), class VARCHAR(20))")
+        mysql_client.execute_query("CREATE TABLE IF NOT EXISTS students (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100),\
+                                   age INT, sex VARCHAR(10), class VARCHAR(20))")
         record = {"name": "Joe", "age": 30, "sex": "male", "class": "level 300"}
         mysql_client.insert_record("students", record)
         result = mysql_client.find("SELECT * FROM students WHERE name = 'Joe'")

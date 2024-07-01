@@ -2,7 +2,7 @@
 
 import mysql.connector
 from mysql.connector import Error
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 import pandas as pd
 
 

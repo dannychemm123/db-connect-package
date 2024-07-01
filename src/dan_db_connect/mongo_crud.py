@@ -70,9 +70,6 @@ class MongoDBOperation:
         """
         collection = self.create_collection(collection_name)
         return list(collection.find(query))
-    
-   
-
 
     def delete(self, query: dict, collection_name: Optional[str] = None):
         """
