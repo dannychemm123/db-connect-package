@@ -1,6 +1,6 @@
 # File: src/dan_db_connect/mongo_crud.py
 
-from typing import Optional
+from typing import Optional, List, Dict, Any
 import pandas as pd
 import json
 from pymongo import MongoClient
@@ -22,10 +22,10 @@ class MongoDBOperation:
         """
         Creates a MongoDB client.
         """
-        client = MongoClient(self.client_uri)
+        client: MongoClient = MongoClient(self.client_uri)
         return client
 
-    def create_database(self):
+    def create_database(self) -> Any:
         """
         Creates and returns the MongoDB database.
         """
@@ -33,7 +33,7 @@ class MongoDBOperation:
         database = client[self.database_name]
         return database
 
-    def create_collection(self, collection_name: str):
+    def create_collection(self, collection_name: str) -> Any:
         """
         Creates and returns the MongoDB collection.
         """
@@ -41,7 +41,7 @@ class MongoDBOperation:
         collection = database[collection_name]
         return collection
 
-    def insert_record(self, record: dict, collection_name: str):
+    def insert_record(self, record: Dict[str, Any], collection_name: str) -> None:
         """
         Inserts a single record into the specified collection.
         """
@@ -50,7 +50,7 @@ class MongoDBOperation:
         collection = self.create_collection(collection_name)
         collection.insert_one(record)
 
-    def bulk_insert(self, datafile: str, collection_name: Optional[str] = None):
+    def bulk_insert(self, datafile: str, collection_name: Optional[str] = None) -> None:
         """
         Bulk inserts records from a file (CSV or Excel) into the specified collection.
         """
@@ -61,28 +61,28 @@ class MongoDBOperation:
         else:
             raise ValueError("Unsupported file format. Use CSV or Excel files.")
         data_json = json.loads(data.to_json(orient="records"))
-        collection = self.create_collection(collection_name)
+        collection = self.create_collection(collection_name or self.collection_name)
         collection.insert_many(data_json)
 
-    def find(self, query: dict, collection_name: Optional[str] = None):
+    def find(self, query: Dict[str, Any], collection_name: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Finds and returns records matching the query from the specified collection.
         """
-        collection = self.create_collection(collection_name)
+        collection = self.create_collection(collection_name or self.collection_name)
         return list(collection.find(query))
 
-    def delete(self, query: dict, collection_name: Optional[str] = None):
+    def delete(self, query: Dict[str, Any], collection_name: Optional[str] = None) -> None:
         """
         Deletes records matching the query from the specified collection.
         """
-        collection = self.create_collection(collection_name)
+        collection = self.create_collection(collection_name or self.collection_name)
         collection.delete_one(query)
 
     def update(
-        self, query: dict, update_values: dict, collection_name: Optional[str] = None
-    ):
+        self, query: Dict[str, Any], update_values: Dict[str, Any], collection_name: Optional[str] = None
+    ) -> None:
         """
         Updates records matching the query with the specified update values in the specified collection.
         """
-        collection = self.create_collection(collection_name)
+        collection = self.create_collection(collection_name or self.collection_name)
         collection.update_one(query, {"$set": update_values})
