@@ -23,11 +23,11 @@ def test_create_client(mongodb_client):
 
 
 def test_insert_record(mongodb_client):
-    record = {"name": "John", "age": 30, "sex": "male", "class": "level 300"}
+    record = {"name": "Gilbert", "age": 30, "sex": "male", "class": "level 300"}
     try:
         mongodb_client.delete({}, "students")  # Clear collection
         mongodb_client.insert_record(record, "students")
-        result = list(mongodb_client.find({"name": "John"}, "students"))
+        result = list(mongodb_client.find({"name": "Gilbert"}, "students"))
         assert len(result) == 1
     except ServerSelectionTimeoutError:
         pytest.skip("MongoDB server is not available")
@@ -48,8 +48,8 @@ def test_bulk_insert(mongodb_client, tmpdir):
 def test_find(mongodb_client):
     try:
         mongodb_client.delete({}, "students")  # Clear collection
-        mongodb_client.insert_record({"name": "John", "age": 30, "sex": "male", "class": "level 300"}, "students")
-        result = list(mongodb_client.find({"name": "John"}, "students"))
+        mongodb_client.insert_record({"name": "Philip", "age": 30, "sex": "male", "class": "level 300"}, "students")
+        result = list(mongodb_client.find({"name": "Philip"}, "students"))
         assert len(result) == 1
     except ServerSelectionTimeoutError:
         pytest.skip("MongoDB server is not available")
